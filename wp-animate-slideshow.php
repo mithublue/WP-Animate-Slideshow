@@ -2,13 +2,12 @@
 /**
  * Plugin Name: WP Animate Slideshow by Cybercraft Technologies
  * Plugin URI:
- * Description: A flexible and easy slideshow maker
- * Version: 1.0
+ * Description: A flexible and easy slideshow maker with user friendly customizable options
+ * Version: 0.1
  * Author: Mithu A Quayium
- * Author URI:
+ * Author URI: http://cybercraftit.com/
  * Requires at least: 4.1
  * Tested up to: 4.4
- *
  * Text Domain: wpas
  */
 
