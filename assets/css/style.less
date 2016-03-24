@@ -1,3 +1,8 @@
+#wpas-custom-header-link{
+  margin-left: 0;
+  margin-top: 5px;
+  display: inline-block;
+}
 #slideApp{
   .slide_layer{
     border: 1px solid #cccccc;
@@ -7,9 +12,18 @@
   .add_layer_panel{
     margin-bottom: 10px;
   }
-  .slide-preview{
+  #slide-preview{
     width: 100%;
     height: 400px;
+    overflow: hidden;
+    margin-bottom: 20px;
+
+    .anim-slider {
+      height: 100%;
+      li{
+        height: 100%;
+      }
+    }
   }
 }
 

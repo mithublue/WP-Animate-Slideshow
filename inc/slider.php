@@ -42,7 +42,7 @@ class WPAS_slider_post_type {
             'has_archive'        => true,
             'hierarchical'       => false,
             'menu_position'      => null,
-            'supports'           => array( 'title', 'thumbnail' )
+            'supports'           => array( 'title' )
         );
 
         register_post_type( 'wpas_slider', $args );

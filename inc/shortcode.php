@@ -24,7 +24,7 @@ class WPAS_Shortcode {
         $slider_settings =  get_post_meta( $atts['id'], 'slider_settings', true );
         ?>
 
-        <div id="wp-animate-slider-<?php echo $atts['id']?>" style="width: <?php echo $slider_settings['width'].$slider_settings['w_unit'] ?>; height: <?php echo $slider_settings['height'].$slider_settings['h_unit'] ?>; ">
+        <div id="wp-animate-slider-<?php echo $atts['id']?>" style="max-width: <?php echo $slider_settings['width'].$slider_settings['w_unit'] ?>; height: <?php echo $slider_settings['height'].$slider_settings['h_unit'] ?>; ">
             <ul class="anim-slider">
 
                 <?php $slides_array = array();
@@ -40,31 +40,40 @@ class WPAS_Shortcode {
 
                         foreach( $slide_meta['layers'] as $layer_id => $layer_array ): ?>
                             <?php
+                            $slideshow_style .= '#'.$layer_id.'{';
+
                             //check if there anything related to style
                             /**style stuff**/
                             if( isset( $layer_array->settings ) && is_object( $layer_array->settings ) ) {
 
-                                $slideshow_style .= '#'.$layer_id.'{';
+
                                 foreach( $layer_array->settings as $property => $value ) {
                                     $slideshow_style .= $property. ' : ' .$value. ( in_array(  $property, array( 'font-size','font-style' ) ) ? 'px' : '' ) .';' ;
                                 }
-                                $slideshow_style .= '}';
                             }
 
                             if( isset( $layer_array->final_pos ) && is_object( $layer_array->final_pos ) ) {
-                                $slideshow_style .= '#'.$layer_id.'{';
+                                //$slideshow_style .= '#'.$layer_id.'{';
                                 foreach( $layer_array->final_pos as $property => $val_array ) {
                                     $slideshow_style .= $property .' : ' . $val_array->val . $val_array->unit.';' ;
-                                    //$slideshow_style .= ( $property == 'x' ? 'top' : 'left' ) . ' : ' .$value. 'px;' ;
                                 }
-                                $slideshow_style .= '}';
+                                //$slideshow_style .= '}';
                             }
+
+                            if( isset( $layer_array->width[0] ) ) {
+                                $slideshow_style .= 'width'. ' : '. $layer_array->width[0] . ';';
+                            }
+                            if( isset( $layer_array->height[0] ) ) {
+                                $slideshow_style .= 'height'. ' : '. $layer_array->height[0] . ';';
+                            }
+
+                            $slideshow_style .= '}';
 
                             /**style stuff ends**/
                             switch( $layer_array->type ) {
                                 case 'image' :
                                     ?>
-                                    <img width="<?php echo isset( $layer_array->width[0] ) ? $layer_array->width[0] : ''; ?>" height="<?php echo isset( $layer_array->height[0] ) ? $layer_array->height[0] : ''; ?>" id="<?php echo $layer_id; ?>" src="<?php echo isset( $layer_array->imgurl ) ? $layer_array->imgurl : '' ; ?>" alt="image"/>
+                                    <img id="<?php echo $layer_id; ?>" src="<?php echo isset( $layer_array->imgurl ) ? $layer_array->imgurl : '' ; ?>" alt="image"/>
                                     <?php
                                     break;
                                 case 'text' :
@@ -110,6 +119,9 @@ class WPAS_Shortcode {
                         }
                     }
                     $('.anim-slider').animateSlider(anim_data);
+
+                    //reset slideshow
+
                 })
             }(jQuery))
         </script>

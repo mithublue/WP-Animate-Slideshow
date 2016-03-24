@@ -12,6 +12,14 @@ class WPAS_slider_meta_box {
 
         //ajax
         add_action( 'wp_ajax_wpas_save_slider_settings', array( $this, 'wpas_save_slider_settings' ) );
+
+        //redirect to the slider when the slide is trashed
+        add_action( 'wp_trash_post', array( $this, 'redirect_to_slider' ) );
+
+        //renove some stuffs
+        add_filter( 'get_sample_permalink_html', array( $this, 'remove_permalink' ) );
+        add_action( 'admin_head-post-new.php', array( $this, 'remove_preview_button' ) );
+        add_action( 'admin_head-post.php', array( $this, 'remove_preview_button' ) );
     }
 
     /**
@@ -186,6 +194,48 @@ class WPAS_slider_meta_box {
             </script>
             <?php
         }
+    }
+
+    /**
+     * Redirect to slider post
+     */
+    function redirect_to_slider( $post_id ) {
+        $parent_id = wp_get_post_parent_id( $post_id );
+
+        if($parent_id){
+            $edit_link = get_edit_post_link( $parent_id );
+            ?>
+            <script>
+                window.location = '<?php echo $edit_link; ?>';
+            </script>
+            <?php
+
+        }
+    }
+
+    /**
+     * Remove permalink
+     */
+    function remove_permalink( $return ) {
+
+        if( get_post_type() == 'wpas_slider'){
+            $return = '';
+        }
+        return $return;
+    }
+    /**
+     * Remove preview button
+     */
+    function remove_preview_button() {
+        global $post_type;
+        $post_types = array(
+            'wpas_slider',
+            'wpas_slide'
+        );
+        if(in_array($post_type, $post_types)) {
+            echo '<style type="text/css">#post-preview, #view-post-btn{display: none;}</style>';
+        }
+
     }
 
 

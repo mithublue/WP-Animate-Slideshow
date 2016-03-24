@@ -64,13 +64,13 @@
         <table v-if="item.type != 'Select layer type'">
             <tr>
                 <td><label>position : </label></td>
-                <td>x : <input type="number" v-model="item.final_pos.top.val"/>
-                    <select v-model="item.final_pos.top.unit">
+                <td>x : <input type="number" v-model="item.final_pos.left.val"/>
+                    <select v-model="item.final_pos.left.unit">
                         <option value="px">PX</option>
                         <option value="%">%</option>
                     </select>
-                    y : <input type="number" v-model="item.final_pos.left.val"/>
-                    <select v-model="item.final_pos.left.unit">
+                    y : <input type="number" v-model="item.final_pos.top.val"/>
+                    <select v-model="item.final_pos.top.unit">
                         <option value="px">PX</option>
                         <option value="%">%</option>
                     </select>

@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Animate Slider by Cybercraft Technologies
+ * Plugin Name: WP Animate Slideshow by Cybercraft Technologies
  * Plugin URI:
  * Description: A flexible and easy slideshow maker
  * Version: 1.0
@@ -32,16 +32,19 @@ class WPAS_Init {
      * Scripts and styles in frontend
      */
     function wp_scripts_styles() {
-        wp_enqueue_script( 'wpas-vue-js', WPAS_ASSET_URI.'/js/vue.js' );
     }
 
     /**
      * Scripts and styles in admin panel
      */
 
-    function admin_scripts_styles() {
+    function admin_scripts_styles( $hook ) {
         wp_enqueue_style( 'wpas-css', WPAS_ASSET_URI.'/css/style.css' );
-        wp_enqueue_script( 'wpas-vue-js', WPAS_ASSET_URI.'/js/vue.js' );
+        if( get_post_type() == 'wpas_slider' || get_post_type() == 'wpas_slide' ) {
+            wp_enqueue_script( 'wpas-vue-js', WPAS_ASSET_URI.'/js/vue.js' );
+            wp_enqueue_script( 'jquery-ui-draggable' );
+        }
+
     }
 
     /**

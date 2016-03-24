@@ -20,6 +20,9 @@ class WPAS_Slide_Meta_Box{
 
         //add slide list button
         add_action( 'edit_form_top', array( $this, 'add_slide_list_form_button' ) );
+
+        //remove stuffs
+        add_action('admin_head',array( $this, 'disable_new_posts_btn' ) );
     }
 
     /**
@@ -46,10 +49,25 @@ class WPAS_Slide_Meta_Box{
         <input name="post_parent_id" type="hidden" value="<?php echo $parent_id? $parent_id : ( isset( $_GET['parent_id'] ) && is_numeric( $_GET['parent_id'] ) ? $_GET['parent_id'] : 0 ) ;?>"/>
         <div id="slideApp">
             <div id="slide-preview">
-                <div id="wp-animate-slider-<?php echo $slide_post->ID; ?>">
+                <div id="wp-animate-slider-<?php echo $slide_post->ID; ?>" style="height: 100%">
                     <ul class="anim-slider">
-                        <li class="anim-slide">
-
+                        <li v-for="( key, item ) in slide_meta.layers">
+                            <img :id="key" :src="item.imgurl" :width="item.width[0]" :height="item.height[0]" alt="" v-if="item.type == 'image'"
+                                 :style="{
+                                    top : item.final_pos.top.val + item.final_pos.top.unit,
+                                    left : item.final_pos.left.val + item.final_pos.left.unit
+                                }"
+                                >
+                            <p :id="key" v-if="item.type == 'text'"
+                                :style="{
+                                    fontSize : item.settings['font-size'] + 'px',
+                                    color : item.settings['color'],
+                                    fontWeight : item.settings['font-weight'],
+                                    fontStyle : item.settings['font-style'],
+                                    backgroundColor : item.settings['background-color'],
+                                    top : item.final_pos.top.val + item.final_pos.top.unit,
+                                    left : item.final_pos.left.val + item.final_pos.left.unit
+                                }">{{ item.content }}</p>
                         </li>
                     </ul>
                 </div>
@@ -68,6 +86,9 @@ class WPAS_Slide_Meta_Box{
         </div>
         <script>
             var slide_meta = JSON.parse('<?php echo json_encode( $slide_meta )?>');
+            var tmp_layer_settings = {
+                layers : {}
+            }
             typeof  slide_meta != "object" ? ( slide_meta = { layers : {}} ) : '';
             var vm = new Vue({
 
@@ -86,7 +107,17 @@ class WPAS_Slide_Meta_Box{
                         delayShow: "delay1s",
                         width : [],
                         height : [],
-                        delayTime : 1
+                        delayTime : 1,
+                        final_pos : {
+                            top : {
+                                val : 0,
+                                unit : 'px'
+                            },
+                            left : {
+                                val : 0,
+                                unit : 'px'
+                            }
+                        }
                     },
 
                     text_layer_array : {
@@ -102,7 +133,17 @@ class WPAS_Slide_Meta_Box{
                         show : 'fadeIn',
                         hide : 'fadeOut',
                         delayShow : 'delay1s',
-                        delayTime : 1
+                        delayTime : 1,
+                        final_pos : {
+                            top : {
+                                val : 0,
+                                unit : 'px'
+                            },
+                            left : {
+                                val : 0,
+                                unit : 'px'
+                            }
+                        }
                     }
                 },
                 components : {
@@ -163,9 +204,50 @@ class WPAS_Slide_Meta_Box{
                         vm.$set( 'slide_meta.layers.' + new_layer_id ,
                            this[layer_type + '_layer_array']
                         );
+                        make_draggable(jQuery);
                     }
                 }
             })
+
+            jQuery(document).ready(function($){
+                make_draggable(jQuery);
+            });
+            var make_draggable = function($) {
+                var init_left = '';
+                var init_left_val = '';
+                var init_top = ''
+                var init_top_val = '';
+
+                $('#slide-preview li *').draggable({
+                    containment : '#slide-preview',
+                    start : function( event, ui ){
+                        elem_id = $(this).attr('id');  console.log(elem_id);
+                        init_left = parseInt($(this).css('left'));
+                        init_left_val = vm.$data.slide_meta.layers[elem_id].final_pos.left.val;
+                        init_top = parseInt($(this).css('left'));
+                        init_top_val = vm.$data.slide_meta.layers[elem_id].final_pos.top.val;
+                        console.log(vm.$data.slide_meta.layers[elem_id]);
+                    },
+                    stop: function(event,ui){
+                        if( vm.$data.slide_meta.layers[elem_id].final_pos.left.unit == 'px' ) {
+                            vm.$data.slide_meta.layers[elem_id].final_pos.left.val = parseInt($(this).css('left'));
+                        }else{
+                            var percent_val_left = ( init_left_val * parseInt($(this).css('left')) ) / init_left;
+                            vm.$data.slide_meta.layers[elem_id].final_pos.left.val = percent_val_left;
+
+
+                        }
+
+                        if( vm.$data.slide_meta.layers[elem_id].final_pos.top.unit == 'px' ) {
+                            vm.$data.slide_meta.layers[elem_id].final_pos.top.val = parseInt($(this).css('top'));
+                        }else{
+                            var percent_val_top = ( init_top_val * parseInt($(this).css('top')) ) / init_top;
+                            vm.$data.slide_meta.layers[elem_id].final_pos.top.val = percent_val_top;
+                        }
+
+                    }
+                });
+            }
         </script>
         <?php
     }
@@ -235,10 +317,22 @@ class WPAS_Slide_Meta_Box{
     function add_slide_list_form_button( $post ) {
         if( 'wpas_slide' == $post->post_type ) {
             $parent_id = wp_get_post_parent_id( $post->ID );
-            $parent_id = $parent_id ? $parent_id : ( isset( $_GET['parent_id'] ) && is_numeric( $_GET['parent_id'] ) && get_post_type( $_GET['parent_id'] ) == 'wpas_slide' ? $_GET['parent_id'] : 0 );
-            echo "<a class='page-title-action' href='".get_edit_post_link( $parent_id )."' id='my-custom-header-link'>Back to Slide List</a>";
+            $parent_id = $parent_id ? $parent_id : ( isset( $_GET['parent_id'] ) && is_numeric( $_GET['parent_id'] ) && get_post_type( $_GET['parent_id'] ) == 'wpas_slider' ? $_GET['parent_id'] : 0 );
+            echo "<a class='page-title-action' href='".get_edit_post_link( $parent_id )."' id='wpas-custom-header-link'>Back to Slide List</a>";
         }
 
+    }
+
+    /**
+     * Remove add new button
+     */
+    function disable_new_posts_btn() {
+        global $pagenow;
+        if(is_admin()){
+            if( get_post_type() == 'wpas_slide'){
+                echo '<style>h1 > a.page-title-action{display: none;}</style>';
+            }
+        }
     }
 
     /**
