@@ -48,6 +48,7 @@ class WPAS_Slide_Meta_Box{
         include_once 'templates/template-slide.php'; ?>
         <input name="post_parent_id" type="hidden" value="<?php echo $parent_id? $parent_id : ( isset( $_GET['parent_id'] ) && is_numeric( $_GET['parent_id'] ) ? $_GET['parent_id'] : 0 ) ;?>"/>
         <div id="slideApp">
+            <div class="slide-preview-title">Slide Preview</div>
             <div id="slide-preview">
                 <div id="wp-animate-slider-<?php echo $slide_post->ID; ?>" style="height: 100%">
                     <ul class="anim-slider">
