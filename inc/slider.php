@@ -13,20 +13,20 @@ class WPAS_slider_post_type {
      */
     public function register_post_type() {
         $labels = array(
-            'name'               => _x( 'Slider', 'post type general name', 'wpas' ),
-            'singular_name'      => _x( 'Slider', 'post type singular name', 'wpas' ),
-            'menu_name'          => _x( 'Slider', 'admin menu', 'wpas' ),
-            'name_admin_bar'     => _x( 'Slider', 'add new on admin bar', 'wpas' ),
-            'add_new'            => _x( 'Add New', 'Slider', 'wpas' ),
-            'add_new_item'       => __( 'Add New Slider', 'wpas' ),
-            'new_item'           => __( 'New Slider', 'wpas' ),
-            'edit_item'          => __( 'Edit Slider', 'wpas' ),
-            'view_item'          => __( 'View Slider', 'wpas' ),
-            'all_items'          => __( 'All Sliders', 'wpas' ),
-            'search_items'       => __( 'Search Sliders', 'wpas' ),
-            'parent_item_colon'  => __( 'Parent Sliders:', 'wpas' ),
-            'not_found'          => __( 'No sliders found.', 'wpas' ),
-            'not_found_in_trash' => __( 'No sliders found in Trash.', 'wpas' )
+            'name'               => _x( 'Slideshow', 'post type general name', 'wpas' ),
+            'singular_name'      => _x( 'Slideshow', 'post type singular name', 'wpas' ),
+            'menu_name'          => _x( 'Slideshow', 'admin menu', 'wpas' ),
+            'name_admin_bar'     => _x( 'Slideshow', 'add new on admin bar', 'wpas' ),
+            'add_new'            => _x( 'Add New', 'Slideshow', 'wpas' ),
+            'add_new_item'       => __( 'Add New Slideshow', 'wpas' ),
+            'new_item'           => __( 'New Slideshow', 'wpas' ),
+            'edit_item'          => __( 'Edit Slideshow', 'wpas' ),
+            'view_item'          => __( 'View Slideshow', 'wpas' ),
+            'all_items'          => __( 'All Slideshows', 'wpas' ),
+            'search_items'       => __( 'Search Slideshows', 'wpas' ),
+            'parent_item_colon'  => __( 'Parent Slideshows:', 'wpas' ),
+            'not_found'          => __( 'No slideshow found.', 'wpas' ),
+            'not_found_in_trash' => __( 'No slideshow found in Trash.', 'wpas' )
         );
 
         $args = array(
